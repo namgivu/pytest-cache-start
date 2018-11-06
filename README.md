@@ -16,21 +16,33 @@ this feature means running a single test at the 2nd time, the cached values are 
 > If you run it a second time the value will be retrieved from the cache and this will be quick:
 so very likely we can reduce fixture creation as our current need
 
-sample code
-```python
-# content of test_caching.py
-import pytest
-import time
 
-@pytest.fixture
-def mydata(request):
-    val = request.config.cache.get("example/value", None)
-    if val is None:
-        time.sleep(9*0.6) # expensive computation :)
-        val = 42
-        request.config.cache.set("example/value", val)
-    return val
+#CRUD cache
 
-def test_function(mydata):
-    assert mydata == 23
+view cache
+```bash
+pytest --cache-show
 ```
+
+delete/clear cache
+```bash
+pytest --cache-clear -m someInvalidModule
+```
+
+
+#sample code
+
+[pure method](/test_pure_method.py)
+*get cached value*
+```
+v = request.config.cache.get('example/value', None) 
+```
+
+*set cached value*
+```
+request.config.cache.set('example/value', 'some value') 
+```
+
+*take away*
+get() method's code at `_pytest.cacheprovider.Cache#get()`
+set() method's code at `_pytest.cacheprovider.Cache#set()`
